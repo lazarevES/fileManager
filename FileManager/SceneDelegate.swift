@@ -1,8 +1,9 @@
+
 //
 //  SceneDelegate.swift
-//  FileManager
+//  Navigation
 //
-//  Created by Егор Лазарев on 05.07.2022.
+//  Created by Егор Лазарев on 01.02.2022.
 //
 
 import UIKit
@@ -17,6 +18,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let _ = (scene as? UIWindowScene) else { return }
+
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
