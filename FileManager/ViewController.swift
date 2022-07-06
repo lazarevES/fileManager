@@ -78,7 +78,9 @@ class ViewController: UIViewController{
         case .notDetermined: // Пользователь еще не сделал выбор
             PHPhotoLibrary.requestAuthorization() { (status) in
                 if status == .authorized {
-                    self.AddPhoto()
+                    DispatchQueue.main.async {
+                        self.AddPhoto()
+                    }
                 }
             }
             return false
