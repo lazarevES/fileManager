@@ -17,6 +17,17 @@ class ViewController: UIViewController{
         return layout
     }()
     
+    var sortAsc = false {
+        didSet {
+            if sortAsc {
+                photos = photos.sorted(by: {$0 < $1})
+            } else {
+                photos = photos.sorted(by: {$0 > $1})
+            }
+            collectionView.reloadData()
+        }
+    }
+    
     lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -30,6 +41,22 @@ class ViewController: UIViewController{
     var documentsUrl: URL?
     var imageCount = 0
     
+    init() {
+        super.init(nibName: nil, bundle: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(getUserData),
+                                               name: NSNotification.Name("changeSort"),
+                                               object: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -40,6 +67,7 @@ class ViewController: UIViewController{
         view.addSubview(collectionView)
         collectionView.register(PhotosItem.self, forCellWithReuseIdentifier: PhotosItem.identifire)
         useConstraint()
+        getUserData()       
         
         do {
             documentsUrl = try FileManager.default.url(for: .documentDirectory,
@@ -54,6 +82,11 @@ class ViewController: UIViewController{
                     photos.append(file.path)
                     imageCount += 1
                 }
+                if sortAsc {
+                    photos = photos.sorted(by: {$0 < $1})
+                } else {
+                    photos = photos.sorted(by: {$0 > $1})
+                }
                 collectionView.reloadData()
             }
         } catch {
@@ -61,6 +94,14 @@ class ViewController: UIViewController{
             let action = UIAlertAction(title: "ок", style: .default, handler: nil)
             alertController.addAction(action)
             self.present(alertController, animated: true, completion: nil)
+        }
+                
+    }
+    
+    @objc func getUserData() {
+        let sort = UserDefaults.standard.bool(forKey: "SortAsc")
+        if sort != sortAsc {
+            sortAsc = sort
         }
     }
     
@@ -107,7 +148,11 @@ class ViewController: UIViewController{
             FileManager.default.createFile(atPath: fileUrl.path,
                                                    contents: data,
                                                    attributes: nil)
-            photos.append(fileUrl.path)
+            if sortAsc {
+                photos.append(fileUrl.path)
+            } else {
+                photos.insert(fileUrl.path, at: 0)
+            }
             collectionView.reloadData()
         }
     }
