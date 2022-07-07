@@ -14,10 +14,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        let tabBar = UITabBarController()
+        let loginNavigationController = UINavigationController(rootViewController: LoginViewController())
+        loginNavigationController.tabBarItem = UITabBarItem(tabBarSystemItem: .favorites, tag: 0)
+        let settingsNavigationController = UINavigationController(rootViewController: SettingsViewController())
+        settingsNavigationController.tabBarItem = UITabBarItem(tabBarSystemItem: .more, tag: 1)
+        tabBar.viewControllers = [loginNavigationController, settingsNavigationController]
         
-        let navigationController = UINavigationController(rootViewController: ViewController())
         self.window = UIWindow(frame: UIScreen.main.bounds)
-        self.window?.rootViewController = navigationController
+        self.window?.rootViewController = tabBar
         self.window?.makeKeyAndVisible()
         
         return true
